@@ -1,30 +1,36 @@
 void help()
 {
-  int lines=15;
+  int lines=22;
   fill(col_hl);
   stroke(0);
   rect(s(120),s(50),s(500),s(100+lines*20));
   fill(0);
   String txt = "HELP:\n";
-  txt+="TAB - select deck A / player A hand\n";
-  txt+="| - select deck B / player B hand\n";
-  txt+="SPACE - draw\n";
+  txt+="SPACE - show/hide hand\n";
+  txt+="ENTER - draw\n";
   txt+="Shift - pointed card to table\n";
+  txt+="BACKSPACE - return pointed card to hand\n";
   txt+="e - exist pointed card\n";
   txt+="r - use resourse\n";
   txt+="u - untap all\n";
   txt+="t - put token into play\n";
   txt+="-/+ - remove/add counter\n";
-  txt+="BACKSPACE - return card to hand\n";
   txt+="d - draw 7 cards\n";
   txt+="m - put your hand back to deck\n";
   txt+="g - show grave\n";
-  txt+="l - load latest game\n";
+  txt+="s - manual save\n";
+  txt+="l (on deck choosing screen)- load latest AutoSave\n";
+  txt+="l - load latest manual save\n";
+  txt+="BUTTONS ON CARD:\n";
+  txt+=" ^ - play a card\n";
+  txt+=" R - put a card on ress\n";
+  txt+=" D - return card to deck\n";
+  txt+=" X - delete card to grave\n";
+  txt+=" -/+ - change closest parameter\n";
   
   textAlign(LEFT,TOP);
   textSize(s(14));
   text(txt,s(145),s(65));
-  text("LOOP: "+1.0*millis()/frameCount,s(400),s(65));
   fill(255);
 }
 
