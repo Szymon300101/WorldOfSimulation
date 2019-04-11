@@ -7,7 +7,6 @@ boolean help_show=false;
 boolean chosen_player=false;  //false at the start, before chosing player
 float mid = 6/10.0; // hand height / screen height
 int sync_clk=250;  //millis between syncs
-boolean toWrite=false;
 
 boolean connected;   //connection to server
 
@@ -49,9 +48,10 @@ void draw()
     {
       active.sync();
       passive.sync();
+      active.loc_save_player(true);
     }
   }else if(!chosen_player)  //1st screen after lounch
-  {
+  { 
     if(connected)
     {
       textSize(s(10));
@@ -76,13 +76,12 @@ void draw()
     
     chosen_player=choose_player(); //chooseplayer() paints these big rects and switches active/passive if required
     if(chosen_player) create(active);  //if player is choosen, set all variables for this user
-    
   }else //2nd screen, choosing deck from a list
     {
       fill(255);
       textSize(20);
       textAlign(CENTER,TOP);
-      text("choose player",width/2,s(10));
+      text("choose deck",width/2,s(10));
       fill(255);
       String[] list = listEntity("decks","name");  //downloading list of decks from server
       for(int i=0;i<list.length;i++)
@@ -97,15 +96,11 @@ void draw()
   text("h - HELP",width-s(50),s(10));
   if(help_show) help();
     fill(255);
-
 }
 
 
 void keyPressed()
 {
-  //process();
-  toWrite=true;
-  
   //println(keyCode);
   switch(keyCode)
   {
@@ -121,10 +116,12 @@ void keyPressed()
       help_show=!help_show; 
     break;
     case 83: //s - save player locally
-      if(active.is_deck) active.loc_save_player(); 
+      if(active.is_deck) active.loc_save_player(false); 
     break;
     case 76: //l - load player from local files
-      active.loc_load_player();
+      if(chosen_player)
+        if(active.deck_name!=null) active.loc_load_player(false);
+        else                       active.loc_load_player(true);
     break;
     case 71: //g - show grave
       active.grave_show=!active.grave_show; 
@@ -143,7 +140,7 @@ void keyPressed()
       for(int i=0;i<active.table.size();i++)
         active.table.get(i).exsisted=false;
       active.Rr();
-    break;
+    break; 
     case 69: //e - exsist pointed card
     if(cc!=null) cc.exsisted=true; 
     break;
@@ -163,6 +160,9 @@ void keyPressed()
     case 16: //Shift - play pointed card
       if(cc!=null) cc.toTable(); 
     break; 
+    case 8: //BACKSPACE - return card to hand
+      if(cc!=null) cc.toHand(); 
+    break; 
     case 82: //r - use ress
         active.Rm(); 
     break;
@@ -174,12 +174,6 @@ void keyPressed()
     format(active);
     break;
   }
-}
-
-void mousePressed()
-{
-  //process();
-  toWrite=true;
 }
 
 //scroll event only for scrollable grave list
